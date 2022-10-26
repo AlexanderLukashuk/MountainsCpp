@@ -169,54 +169,69 @@ int main()
         cout << endl;
     }
 
-    for (int i = 0; i < size; i++)
+    srand(time(NULL));
+    int mine = rand() % size;
+    // mine += 5;
+    // int mine = rand() % size;
+    cout << "Mine start = " << mine << endl;
+    int mineLength = 0;
+    int dwarfMines[100];
+    int dwarfsMinesIndex = 0;
+    int mineStart_x[50];
+    int mineEnd_x[50];
+    int mineStart_y[50];
+    int mineEnd_y[50];
+    int mineStartIndex = 0;
+    int mineEndIndex = 0;
+    int mine_j;
+
+    for (int i = 0; i < 50; i++)
     {
-        // cout << "i = " << i << endl;
-        for (int j = 0; j < size; j++)
+        dwarfMines[i] = -1;
+        mineStart_x[i] = -1;
+        mineEnd_x[i] = -1;
+        mineStart_y[i] = -1;
+        mineEnd_y[i] = -1;
+    }
+
+    cout << "99 problems" << endl;
+
+    for (int j = 0; j < size; j++)
+    {
+        if (mountains[mine][j] == 1)
         {
-            // cout << "j = " << j << endl;
-            if (mountains[i][j] == 1)
-            {
-                // cout << "Voshel " << j << " i = " << i << endl;
-                for (int k = i; k < size; k++)
-                {
-                    // cout << "k = " << k << endl;
-                    for (int l = j; l >= 0; l--)
-                    {
-                        // cout << "l = " << l << endl;
-                        if (mountains[k][l] == 0)
-                        {
-                            // cout << "epta" << endl;
-                            lakeVolume++;
-                        }
-                    }
-                }
-
-                // cout << j << "Pososi" << endl;
-
-                lakeVolumeArray[lakeVolumeArrayIndex] = lakeVolume;
-                lakeVolumeArrayIndex++;
-                lakeVolume = 0;
-
-                for (int k = i; k < size; k++)
-                {
-                    // cout << "k = " << k << endl;
-                    for (int l = j; l < size; l++)
-                    {
-                        // cout << "l = " << l << endl;
-                        if (mountains[k][l] == 0)
-                        {
-                            // cout << "epta" << endl;
-                            lakeVolume++;
-                        }
-                    }
-                }
-                lakeVolumeArray[lakeVolumeArrayIndex] = lakeVolume;
-                lakeVolumeArrayIndex++;
-                lakeVolume = 0;         
-            }
+            mine_j = j;
+            break;
         }
     }
+
+    cout << "Mine j = " << mine_j << endl;
+
+    while (mountains[mine][mine_j] != 0)
+    {
+        mineStart_x[mineStartIndex] = mine_j;
+        mineStart_y[mineStartIndex] = mine;
+        mineStartIndex++;
+
+        for (int k = mine_j;; k++)
+        {
+            if (mountains[mine][k] == 0 || k == size)
+            {
+                mineEnd_x[mineEndIndex] = k;
+                mineEnd_y[mineEndIndex] = mine;
+                mineEndIndex++;
+                break;
+            }
+            mountains[mine][k] = 0;
+            mineLength++;
+        }
+
+        dwarfMines[dwarfsMinesIndex] = mineLength;
+        dwarfsMinesIndex++;
+        mineLength = 0;
+    }
+
+    cout << "Blya" << endl;
 
     cout << "Ebal tvoi rot" << endl;
 
@@ -234,14 +249,113 @@ int main()
     int maxLakeVolume = lakeVolumeArray[0];
     lakeVolumeArrayIndex = 0;
 
-    while (lakeVolumeArray[lakeVolumeArrayIndex] != 0)
+
+    int icicle_i[50];
+    int icicle_j[50];
+    int icicleIndex = 0;
+
+    for (int i = 0; i < 50; i++)
     {
-        if (lakeVolumeArray[lakeVolumeArrayIndex] > maxLakeVolume)
-        {
-            maxLakeVolume = lakeVolumeArray[lakeVolumeArrayIndex];
-        }
-        lakeVolumeArrayIndex++;
+        icicle_i[i] = -1;
+        icicle_j[i] = -1;
     }
+
+    for (int i = 0; i < size; i++)
+    {
+        for (int j = 0; j < size; j++)
+        {
+            if (mountains[i][j + 1] == 1 || mountains[i][j - 1] == 1 || mountains[i - 1][j] == 1)
+            {
+                continue;
+            }
+
+            if (mountains[i][j] == 1)
+            {
+                icicle_i[icicleIndex] = i;
+                icicle_j[icicleIndex] = j;
+                icicleIndex++;
+            }
+        }
+    }
+
+    cout << "Pidaras" << endl;
+
+    int icicleLength = 0;
+    int icicleLengthArray[50];
+    icicleIndex = 0;
+
+    for (int i = 0; i < 50; i++)
+    {
+        icicleLengthArray[i] = -1;
+    }
+
+    while (icicle_i[icicleIndex] != -1)
+    {
+        for (int j = icicle_j[icicleIndex];; j++)
+        {
+            if (j + 1 == size)
+            {
+                break;
+            }
+            mountains[icicle_i[icicleIndex]][j] = 2;
+            icicleLength++;
+        }
+        icicleLengthArray[icicleIndex] = icicleLength;
+        icicleLength = 0;
+        icicleIndex++;
+    }
+
+    cout << "EPTA" << endl;
+
+    int maxIcicleLength = icicleLengthArray[0];
+    icicleIndex = 0;
+    while (icicleLengthArray[icicleIndex] != -1)
+    {
+        if (icicleLengthArray[icicleIndex] > maxIcicleLength)
+        {
+            maxIcicleLength = icicleLengthArray[icicleIndex];
+        }
+        icicleIndex++;
+    }
+
+    cout << "HUITA" << endl;
+
+    cout << "The biggest icicle: " << maxIcicleLength << endl;
+
+    // while (lakeVolumeArray[lakeVolumeArrayIndex] != 0)
+    // {
+    //     if (lakeVolumeArray[lakeVolumeArrayIndex] > maxLakeVolume)
+    //     {
+    //         maxLakeVolume = lakeVolumeArray[lakeVolumeArrayIndex];
+    //     }
+    //     lakeVolumeArrayIndex++;
+    // }
+
+    cout << "pizdec" << endl;
+
+
+    // mineStartIndex = 0;
+    // mineEndIndex = 0;
+    dwarfsMinesIndex = 0;
+    int maxMineLength = dwarfMines[0];
+    int maxMineLengthIndex;
+    // while (dwarfMines[dwarfsMinesIndex] != -1)
+    // {
+    //     if (dwarfMines[dwarfsMinesIndex > maxMineLength])
+    //     {
+    //         maxMineLength = dwarfMines[dwarfsMinesIndex];
+    //         maxMineLengthIndex = dwarfsMinesIndex;
+    //     }
+    //     dwarfsMinesIndex++;
+    //     // mineStartIndex++;
+    //     // mineEndIndex++;
+    // }
+
+    // cout << "pizdec 2" << endl;
+
+    // cout << "Max mine legth = " << dwarfMines[maxMineLengthIndex] << " coordinates:" << endl;
+    // cout << "Start: x = " << mineStart_x[maxMineLengthIndex] << " y = " << mineStart_y[maxMineLengthIndex] << endl;
+    // cout << "End: x = " << mineEnd_x[maxMineLengthIndex] << " y = " << mineEnd_y[maxMineLengthIndex] << endl;
 
     cout << "Nu chto za huina" << endl;
 
